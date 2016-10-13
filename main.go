@@ -1,15 +1,8 @@
 package main
 
-import (
-	"fmt"
-	"net/http"
-)
-
-func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "This is a test")
-}
+import "net/http"
 
 func main() {
-	http.HandleFunc("/", handler)
+	http.Handle("/", http.FileServer(http.Dir("./dist")))
 	http.ListenAndServe(":8080", nil)
 }
