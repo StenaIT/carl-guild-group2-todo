@@ -22,7 +22,7 @@ class Main extends React.Component {
 
   componentDidMount() {
     this.socket.on('init', this.initialize);
-    this.socket.on('new:item', this.itemAdded);
+    this.socket.on('item:new', this.itemAdded);
   }
 
   initialize(items) {
@@ -39,7 +39,8 @@ class Main extends React.Component {
 
   addItem(item) {
     console.log('Adding: ' + JSON.stringify(item));
-    this.socket.emit('add:item', item);
+    this.socket.emit('item:add', item);
+    this.socket.emit('item:delete');
   }
 
   render() {

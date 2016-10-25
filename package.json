@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "prestart": "node_modules/.bin/babel src --presets es2015 --plugins transform-react-jsx --out-dir dist --copy-files && browserify dist/index.js -o dist/bundle.js",
-    "start": "go run main.go"
+    "start": "echo 'Build finished'"
   },
   "repository": {
     "type": "git",

@@ -1,47 +1,39 @@
 package main
 
 import (
-  "fmt"
 	"log"
 	"net/http"
 	"github.com/googollee/go-socket.io"
 )
 
-//TodoItem A todo item consisting of a description
-type TodoItem struct {
-  Description string `json:"description"`
-}
-
-func failOnError(err error, msg string) {
-  if err != nil {
-    log.Fatalf("%s: %s", msg, err)
-    panic(fmt.Sprintf("%s: %s", msg, err))
-  }
-}
-
 func main() {
-  var items []TodoItem = []TodoItem{
-    TodoItem{
-      Description: "Todo",
-    },
-    TodoItem{
-      Description: "Items",
-    },
-  }
-
 	server, err := socketio.NewServer(nil)
-
-	failOnError(err, "Failed to setup socket io server")
+	FailOnError(err, "Failed to setup socket io server")
 
 	server.On("connection", func(so socketio.Socket) {
 		log.Println("Connected!")
-    failOnError(err, "Failed to marshal struct")
-    so.Emit("init", items)
+    FailOnError(err, "Failed to marshal struct")
+		items, err := GetItems()
+
+		if err != nil {
+			log.Fatal(err)
+		} else {
+			so.Emit("init", items)
+		}
+
 		so.Join("todo")
 
-    so.On("add:item", func(item TodoItem) {
-      items = append(items, item)
-      so.Emit("new:item", items)
+		so.On("item:delete", func() {
+			log.Println("Deleting!")
+		})
+
+    so.On("item:add", func(item TodoItem) {
+			log.Println("Item added!")
+      err := Insert(item)
+      if err != nil {
+        so.Emit("error", "Cannot insert item")
+      }
+      so.BroadcastTo("todo", "items:added")
     })
 
 		so.On("disconnection", func() {
