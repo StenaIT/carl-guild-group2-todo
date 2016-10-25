@@ -42,7 +42,7 @@ class SubmitForm extends React.Component {
         onChange={this.handleChange}
         onKeyPress={this.handleKeyPress}
         value={this.state.inputDescription} />
-      <button onClick={this.addTodoItem}>Add</button>
+      <button className="" onClick={this.addTodoItem}>Add</button>
       </div>
     );
   }
