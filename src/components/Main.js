@@ -32,15 +32,15 @@ class Main extends React.Component {
   }
 
   itemAdded(newItems) {
-    this.setState({
-      todoItems: newItems
-    });
+    console.log('New item added');
+    // this.setState({
+    //   todoItems: newItems
+    // });
   }
 
   addItem(item) {
     console.log('Adding: ' + JSON.stringify(item));
-    this.socket.emit('item:add', item);
-    this.socket.emit('item:delete');
+    this.socket.emit('item:add', item, 'todo');
   }
 
   render() {

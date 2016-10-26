@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+
 	"github.com/googollee/go-socket.io"
 )
 
@@ -12,8 +13,10 @@ func main() {
 
 	server.On("connection", func(so socketio.Socket) {
 		log.Println("Connected!")
-    FailOnError(err, "Failed to marshal struct")
+		FailOnError(err, "Failed to marshal struct")
 		items, err := GetItems()
+
+		so.Join("todo")
 
 		if err != nil {
 			log.Fatal(err)
@@ -21,20 +24,18 @@ func main() {
 			so.Emit("init", items)
 		}
 
-		so.Join("todo")
-
 		so.On("item:delete", func() {
 			log.Println("Deleting!")
 		})
 
-    so.On("item:add", func(item TodoItem) {
+		so.On("item:add", func(item TodoItem) {
 			log.Println("Item added!")
-      err := Insert(item)
-      if err != nil {
-        so.Emit("error", "Cannot insert item")
-      }
-      so.BroadcastTo("todo", "items:added")
-    })
+			err := Insert(item)
+			if err != nil {
+				so.Emit("error", "Cannot insert item")
+			}
+			so.BroadcastTo("todo", "item:new")
+		})
 
 		so.On("disconnection", func() {
 			log.Println("on disconnect")
@@ -42,7 +43,7 @@ func main() {
 	})
 
 	server.On("error", func(so socketio.Socket, err error) {
-			log.Println("error:", err)
+		log.Println("error:", err)
 	})
 
 	http.Handle("/socket.io/", server)
