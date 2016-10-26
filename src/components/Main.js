@@ -40,12 +40,12 @@ class Main extends React.Component {
 
   addItem(item) {
     console.log('Adding: ' + JSON.stringify(item));
-    this.socket.emit('item:add', item, 'todo');
+    this.socket.emit('item:add', item);
   }
 
   render() {
     return (
-      <div>
+      <div className="container">
         <TodoList items={this.state.todoItems} />
         <SubmitForm addItem={this.addItem} />
       </div>

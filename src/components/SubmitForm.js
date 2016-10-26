@@ -37,13 +37,19 @@ class SubmitForm extends React.Component {
 
   render() {
     return (
-      <div>
-      <input type="text" placeholder="Enter text"
-        onChange={this.handleChange}
-        onKeyPress={this.handleKeyPress}
-        value={this.state.inputDescription} />
-      <button onClick={this.addTodoItem}>Add</button>
-      </div>
+        <div className="form-group formContainer">
+            <label className="control-label">Add item</label>
+            <div className="input-group">
+              <span className="input-group-addon"></span>
+              <input type="text" className="form-control" placeholder="Enter text"
+              onChange={this.handleChange}
+              onKeyPress={this.handleKeyPress}
+              value={this.state.inputDescription} />
+              <span className="input-group-btn">
+                <button className="btn btn-default" type="button" onClick={this.addTodoItem}>Add</button>
+              </span>
+            </div>
+          </div>
     );
   }
 }

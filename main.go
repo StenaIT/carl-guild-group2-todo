@@ -16,7 +16,7 @@ func main() {
 		FailOnError(err, "Failed to marshal struct")
 		items, err := GetItems()
 
-		so.Join("todo")
+		//so.Join("todo")
 
 		if err != nil {
 			log.Fatal(err)
