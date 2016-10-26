@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 	"net/http"
-
 	"github.com/googollee/go-socket.io"
 )
 
@@ -13,11 +12,9 @@ func main() {
 
 	server.On("connection", func(so socketio.Socket) {
 		log.Println("Connected!")
-		FailOnError(err, "Failed to marshal struct")
 		items, err := GetItems()
 
 		//so.Join("todo")
-
 		if err != nil {
 			log.Fatal(err)
 		} else {
@@ -34,7 +31,12 @@ func main() {
 			if err != nil {
 				so.Emit("error", "Cannot insert item")
 			}
-			so.BroadcastTo("todo", "item:new")
+
+			if items, err := GetItems(); err != nil {
+				log.Fatal(err)
+			} else {
+				so.Emit("item:new", items)
+			}
 		})
 
 		so.On("disconnection", func() {

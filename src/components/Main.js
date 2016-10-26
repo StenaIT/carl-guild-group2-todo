@@ -33,9 +33,9 @@ class Main extends React.Component {
 
   itemAdded(newItems) {
     console.log('New item added');
-    // this.setState({
-    //   todoItems: newItems
-    // });
+     this.setState({
+       todoItems: newItems
+     });
   }
 
   addItem(item) {

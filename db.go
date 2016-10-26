@@ -2,12 +2,11 @@ package main
 
 import (
 	"log"
-
 	"gopkg.in/mgo.v2"
 )
 
 func createDbSession() (*mgo.Session, error) {
-	return mgo.Dial("192.168.99.100")
+	return mgo.Dial("localhost")
 }
 
 //Insert TodoItem to db
@@ -30,6 +29,7 @@ func Insert(item TodoItem) error {
 
 //GetItems return all todo items in db
 func GetItems() ([]TodoItem, error) {
+	log.Printf("Getting items for db")
 	session, err := createDbSession()
 	var items []TodoItem
 	if err != nil {
