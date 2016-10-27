@@ -15,6 +15,7 @@ class Main extends React.Component {
   }
 
   setupBindings() {
+    this.initialize = this.initialize.bind(this);
     this.setItems = this.setItems.bind(this);
     this.addItem = this.addItem.bind(this);
     this.deleteItem = this.deleteItem.bind(this);
@@ -26,9 +27,15 @@ class Main extends React.Component {
     this.socket.on('item:deleted', this.setItems);
   }
 
+  initialize(items) {
+    this.setState({
+      todoItems: items
+    });
+  }
+
   setItems(items) {
     this.setState({
-      todoItems: newItems
+      todoItems: items
     });
   }
 

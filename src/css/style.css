@@ -8,6 +8,20 @@
     margin-top: 40px;
 }
 
+.itemRow{
+    border-bottom: solid 1px #aea79f; 
+}
+
+.checkBoxDiv{
+    padding: 4px; 
+
+}
+
+.description{
+    padding-left: 10px;
+    text-align: middle;
+}
+
 body{
     background-color:#F8D6FF;
 }

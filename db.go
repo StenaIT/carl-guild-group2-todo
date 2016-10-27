@@ -7,7 +7,7 @@ import (
 )
 
 func createDbSession() (*mgo.Session, error) {
-	return mgo.Dial("localhost")
+	return mgo.Dial("192.168.99.100")
 }
 
 //Insert TodoItem to db
