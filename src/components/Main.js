@@ -16,13 +16,19 @@ class Main extends React.Component {
 
   setupBindings() {
     this.initialize = this.initialize.bind(this);
-    this.itemAdded = this.itemAdded.bind(this);
+    this.setItems = this.setItems.bind(this);
     this.addItem = this.addItem.bind(this);
+    this.deleteItem = this.deleteItem.bind(this);
+    this.updateItem = this.updateItem.bind(this);
+    this.handleError = this.handleError.bind(this);
   }
 
   componentDidMount() {
-    this.socket.on('init', this.initialize);
-    this.socket.on('new:item', this.itemAdded);
+    this.socket.on('init', this.setItems);
+    this.socket.on('item:added', this.setItems);
+    this.socket.on('item:deleted', this.setItems);
+    this.socket.on('item:updated', this.setItems);
+    this.socket.on('error', this.handleError);
   }
 
   initialize(items) {
@@ -31,21 +37,35 @@ class Main extends React.Component {
     });
   }
 
-  itemAdded(newItems) {
+  setItems(items) {
     this.setState({
-      todoItems: newItems
+      todoItems: items
     });
   }
 
   addItem(item) {
     console.log('Adding: ' + JSON.stringify(item));
-    this.socket.emit('add:item', item);
+    this.socket.emit('item:add', item);
+  }
+
+  deleteItem(item) {
+    console.log('Deleting: ' + JSON.stringify(item));
+    this.socket.emit('item:delete', item);
+  }
+
+  updateItem(before, after) {
+    console.log('Updating: ' + JSON.stringify(before) + '\n' + JSON.stringify(after));
+    this.socket.emit('item:update', before, after);
+  }
+
+  handleError(error) {
+    console.log(error);
   }
 
   render() {
     return (
-      <div>
-        <TodoList items={this.state.todoItems} />
+      <div className="container">
+        <TodoList updateItem={this.updateItem} items={this.state.todoItems} deleteItem={this.deleteItem} />
         <SubmitForm addItem={this.addItem} />
       </div>
     );
