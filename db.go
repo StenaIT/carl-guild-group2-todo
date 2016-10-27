@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+
 	"gopkg.in/mgo.v2"
 )
 
@@ -23,13 +24,11 @@ func Insert(item TodoItem) error {
 		return err
 	}
 
-	log.Println("Inserted item")
 	return nil
 }
 
 //GetItems return all todo items in db
 func GetItems() ([]TodoItem, error) {
-	log.Printf("Getting items for db")
 	session, err := createDbSession()
 	var items []TodoItem
 	if err != nil {
@@ -42,24 +41,21 @@ func GetItems() ([]TodoItem, error) {
 		return nil, err
 	}
 
-	log.Println(items)
-
 	return items, nil
 }
 
 //Delete item by key
-/*
-func Delete(key string) error {
+func Delete(item TodoItem) error {
 	session, err := createDbSession()
 	if err != nil {
 		return err
 	}
 	defer session.Close()
 
-	if err := session.Query("DELETE FROM items WHERE key = ' " + key + "'").Exec(); err != nil {
+	if err := session.DB("todo").C("items").Remove(item); err != nil {
 		log.Fatal(err)
 		return err
 	}
 
 	return nil
-}*/
+}

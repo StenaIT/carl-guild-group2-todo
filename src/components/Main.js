@@ -15,27 +15,21 @@ class Main extends React.Component {
   }
 
   setupBindings() {
-    this.initialize = this.initialize.bind(this);
-    this.itemAdded = this.itemAdded.bind(this);
+    this.setItems = this.setItems.bind(this);
     this.addItem = this.addItem.bind(this);
+    this.deleteItem = this.deleteItem.bind(this);
   }
 
   componentDidMount() {
-    this.socket.on('init', this.initialize);
-    this.socket.on('item:new', this.itemAdded);
+    this.socket.on('init', this.setItems);
+    this.socket.on('item:new', this.setItems);
+    this.socket.on('item:deleted', this.setItems);
   }
 
-  initialize(items) {
+  setItems(items) {
     this.setState({
-      todoItems: items
+      todoItems: newItems
     });
-  }
-
-  itemAdded(newItems) {
-    console.log('New item added');
-     this.setState({
-       todoItems: newItems
-     });
   }
 
   addItem(item) {
@@ -43,10 +37,15 @@ class Main extends React.Component {
     this.socket.emit('item:add', item);
   }
 
+  deleteItem(item) {
+    console.log('Deleting: ' + JSON.stringify(item));
+    this.socket.emit('item:delete', item);
+  }
+
   render() {
     return (
       <div className="container">
-        <TodoList items={this.state.todoItems} />
+        <TodoList items={this.state.todoItems} deleteItem={this.deleteItem} />
         <SubmitForm addItem={this.addItem} />
       </div>
     );
