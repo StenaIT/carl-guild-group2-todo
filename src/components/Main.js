@@ -19,12 +19,16 @@ class Main extends React.Component {
     this.setItems = this.setItems.bind(this);
     this.addItem = this.addItem.bind(this);
     this.deleteItem = this.deleteItem.bind(this);
+    this.updateItem = this.updateItem.bind(this);
+    this.handleError = this.handleError.bind(this);
   }
 
   componentDidMount() {
     this.socket.on('init', this.setItems);
-    this.socket.on('item:new', this.setItems);
+    this.socket.on('item:added', this.setItems);
     this.socket.on('item:deleted', this.setItems);
+    this.socket.on('item:updated', this.setItems);
+    this.socket.on('error', this.handleError);
   }
 
   initialize(items) {
@@ -49,10 +53,19 @@ class Main extends React.Component {
     this.socket.emit('item:delete', item);
   }
 
+  updateItem(before, after) {
+    console.log('Updating: ' + JSON.stringify(before) + '\n' + JSON.stringify(after));
+    this.socket.emit('item:update', before, after);
+  }
+
+  handleError(error) {
+    console.log(error);
+  }
+
   render() {
     return (
       <div className="container">
-        <TodoList items={this.state.todoItems} deleteItem={this.deleteItem} />
+        <TodoList updateItem={this.updateItem} items={this.state.todoItems} deleteItem={this.deleteItem} />
         <SubmitForm addItem={this.addItem} />
       </div>
     );

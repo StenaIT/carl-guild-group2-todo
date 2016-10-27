@@ -10,7 +10,7 @@ class TodoList extends React.Component {
     return (
       <div>
         {this.props.items.map((item, key) => {
-          return <TodoItem item={item} key={key} />;
+          return <TodoItem onChecked={this.props.updateItem} item={item} key={key} />;
         })}
       </div>
     );
@@ -18,11 +18,12 @@ class TodoList extends React.Component {
 }
 
 TodoList.propTypes = {
-  items: React.PropTypes.array
+  items: React.PropTypes.array,
+  updateItem: React.PropTypes.func.isRequired
 };
 
 TodoList.defaultProps = {
-  items: {}
+  items: []
 };
 
 export default TodoList;

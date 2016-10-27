@@ -20,6 +20,7 @@ func handleConnection(so socketio.Socket) {
 	items, err := GetItems()
 
 	so.Join("todo")
+
 	if err != nil {
 		log.Fatal(err)
 	} else {
@@ -29,7 +30,8 @@ func handleConnection(so socketio.Socket) {
 	so.On("item:delete", func(item TodoItem) {
 		err := Delete(item)
 		if err != nil {
-			so.Emit("error", "Either not found or cannot be deleted")
+			log.Fatal(err)
+			so.Emit("error", "Item not found or cannot be deleted")
 		}
 
 		if items, err := GetItems(); err != nil {
@@ -40,7 +42,24 @@ func handleConnection(so socketio.Socket) {
 		}
 	})
 
+	so.On("item:update", func(before TodoItem, after TodoItem) {
+		log.Println("Updating item!")
+		err := Update(before, after)
+		if err != nil {
+			log.Fatal(err)
+			so.Emit("error", "Item not found or cannot be updated")
+		}
+
+		if items, err := GetItems(); err != nil {
+			log.Fatal(err)
+		} else {
+			so.BroadcastTo("todo", "item:updated", items)
+			so.Emit("item:updated", items)
+		}
+	})
+
 	so.On("item:add", func(item TodoItem) {
+		log.Println("Adding item event!")
 		err := Insert(item)
 		if err != nil {
 			so.Emit("error", "Cannot insert item")
@@ -49,8 +68,9 @@ func handleConnection(so socketio.Socket) {
 		if items, err := GetItems(); err != nil {
 			log.Fatal(err)
 		} else {
-			so.BroadcastTo("todo", "item:new", items)
-			so.Emit("item:new", items)
+			log.Println("Broadcasting items!")
+			so.BroadcastTo("todo", "item:added", items)
+			so.Emit("item:added", items)
 		}
 	})
 

@@ -7,11 +7,12 @@ import (
 )
 
 func createDbSession() (*mgo.Session, error) {
-	return mgo.Dial("192.168.99.100")
+	return mgo.Dial("localhost")
 }
 
 //Insert TodoItem to db
 func Insert(item TodoItem) error {
+	log.Println("Adding item")
 	session, err := createDbSession()
 	if err != nil {
 		return err
@@ -44,7 +45,24 @@ func GetItems() ([]TodoItem, error) {
 	return items, nil
 }
 
-//Delete item by key
+//Update updates a todo item
+func Update(before TodoItem, after TodoItem) error {
+	session, err := createDbSession()
+	if err != nil {
+		return err
+	}
+
+	defer session.Close()
+
+	if err := session.DB("todo").C("items").Update(before, after); err != nil {
+		log.Fatal(err)
+		return err
+	}
+
+	return nil
+}
+
+//Delete todo item
 func Delete(item TodoItem) error {
 	session, err := createDbSession()
 	if err != nil {

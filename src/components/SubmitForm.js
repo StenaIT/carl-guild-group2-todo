@@ -1,4 +1,5 @@
 import React from 'react';
+import Uuid from 'node-uuid';
 
 class SubmitForm extends React.Component {
   constructor(props) {
@@ -29,7 +30,11 @@ class SubmitForm extends React.Component {
   }
 
   addTodoItem() {
-    this.props.addItem({description: this.state.inputDescription});
+    this.props.addItem({
+      todoId: Uuid.v4(),
+      description: this.state.inputDescription,
+      done: false
+    });
     this.setState({
       inputDescription: ''
     });
